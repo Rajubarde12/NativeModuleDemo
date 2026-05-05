@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.os.HandlerThread
 import android.os.IBinder
 import android.util.Log
@@ -39,7 +42,15 @@ class LocationForegroundService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "Service onStartCommand")
         createNotificationChannel()
-        startForeground(NOTIFICATION_ID, buildNotification())
+        
+        val notification = buildNotification()
+        // 1. Android 10+ and 14+ specific Foreground Service Requirements
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+        } else {
+            startForeground(NOTIFICATION_ID, notification)
+        }
+        
         startLocationUpdates()
         return START_STICKY
     }
@@ -142,10 +153,20 @@ class LocationForegroundService : Service() {
     }
 
     private fun buildNotification(): Notification {
+        // 2. Interactive PendingIntent - tapping notification opens the app
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+        val pendingIntent = launchIntent?.let {
+            PendingIntent.getActivity(
+                this, 0, it, 
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        }
+
         return Notification.Builder(this, CHANNEL_ID)
             .setContentTitle("Location Tracking Active")
             .setContentText("Your location is being tracked")
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
+            .setContentIntent(pendingIntent)
             .setOngoing(true)
             .build()
     }

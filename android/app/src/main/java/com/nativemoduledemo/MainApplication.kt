@@ -7,7 +7,7 @@ import com.facebook.react.ReactHost
 import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.nativemoduledemo.location.LocationPackage
-
+import  com.nativemoduledemo.bioauthentication.BiometricPackage
 class MainApplication : Application(), ReactApplication {
 
   override val reactHost: ReactHost by lazy {
@@ -17,6 +17,7 @@ class MainApplication : Application(), ReactApplication {
         PackageList(this).packages.apply {
           add(DeviceInfoPackage())
           add(LocationPackage())
+          add(BiometricPackage());
         },
     )
   }

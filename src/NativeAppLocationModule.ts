@@ -3,6 +3,10 @@ import { TurboModuleRegistry } from 'react-native';
 export interface location {
     latitude: number;
     longitude: number;
+    accuracy: number;
+    timestamp: number;
+    speed?: number;
+    bearing?: number;
   }
 
 export interface Spec extends TurboModule {

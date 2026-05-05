@@ -2,12 +2,15 @@ package com.nativemoduledemo.location
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import androidx.core.content.ContextCompat
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.annotations.ReactModule
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.nativemoduledemo.NativeAppLocationModuleSpec
@@ -31,7 +34,19 @@ class LocationModule(reactContext: ReactApplicationContext) :
 
     @SuppressLint("MissingPermission")
     override fun getCurrentLocation(promise: Promise) {
-        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+        // 1. Fail-fast native permission check
+        if (ContextCompat.checkSelfPermission(reactApplicationContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            promise.reject("PERMISSION_DENIED", "Location permission is not granted natively.")
+            return
+        }
+
+        // 2. Use CancellationToken to prevent hanging requests & memory leaks
+        val cancellationTokenSource = CancellationTokenSource()
+        
+        fusedLocationClient.getCurrentLocation(
+            Priority.PRIORITY_HIGH_ACCURACY, 
+            cancellationTokenSource.token
+        )
             .addOnSuccessListener { location ->
                 if (location != null) {
                     val result = Arguments.createMap().apply {
@@ -66,12 +81,17 @@ class LocationModule(reactContext: ReactApplicationContext) :
             LocationForegroundService::class.java
         )
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            reactApplicationContext.startForegroundService(serviceIntent)
-        } else {
-            reactApplicationContext.startService(serviceIntent)
+        // 3. Robust service start handling for Android 12+ background start restrictions
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                reactApplicationContext.startForegroundService(serviceIntent)
+            } else {
+                reactApplicationContext.startService(serviceIntent)
+            }
+            Log.d(TAG, "LocationForegroundService started")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to start foreground service: ${e.message}")
         }
-        Log.d(TAG, "LocationForegroundService started")
     }
 
     override fun stopTracking() {

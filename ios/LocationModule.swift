@@ -9,8 +9,10 @@ class LocationModule: RCTEventEmitter {
     private var locationManager: CLLocationManager?
     private var locationDelegate: LocationDelegateWrapper?
     private var hasListeners = false
-    private var singleResolve: RCTPromiseResolveBlock?
-    private var singleReject: RCTPromiseRejectBlock?
+    
+    // 1. Thread-safe queue for concurrent single location requests
+    private var pendingRequests: [(resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock)] = []
+    private let queueLock = NSLock()
 
     override static func moduleName() -> String! {
         return "LocationModule"
@@ -36,8 +38,9 @@ class LocationModule: RCTEventEmitter {
         reject: @escaping RCTPromiseRejectBlock
     ) {
         DispatchQueue.main.async {
-            self.singleResolve = resolve
-            self.singleReject = reject
+            self.queueLock.lock()
+            self.pendingRequests.append((resolve, reject))
+            self.queueLock.unlock()
 
             if self.locationManager == nil {
                 self.locationManager = CLLocationManager()
@@ -58,10 +61,15 @@ class LocationModule: RCTEventEmitter {
             self.locationDelegate = LocationDelegateWrapper(module: self)
             self.locationManager = CLLocationManager()
             self.locationManager?.delegate = self.locationDelegate
-            self.locationManager?.desiredAccuracy = kCLLocationAccuracyBest
+            
+            // 2. Optimized for continuous navigation tracking
+            self.locationManager?.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             self.locationManager?.distanceFilter = 3
+            
+            // 3. Apple Best Practice: Explicitly indicate background tracking
             self.locationManager?.allowsBackgroundLocationUpdates = true
             self.locationManager?.pausesLocationUpdatesAutomatically = false
+            self.locationManager?.showsBackgroundLocationIndicator = true
             self.locationManager?.requestAlwaysAuthorization()
             self.locationManager?.startUpdatingLocation()
         }
@@ -84,23 +92,29 @@ class LocationModule: RCTEventEmitter {
     }
 
     func handleSingleLocation(_ location: CLLocation) {
-        if let resolve = singleResolve {
-            resolve([
+        queueLock.lock()
+        let requests = pendingRequests
+        pendingRequests.removeAll()
+        queueLock.unlock()
+        
+        for req in requests {
+            req.resolve([
                 "latitude": location.coordinate.latitude,
                 "longitude": location.coordinate.longitude,
                 "accuracy": location.horizontalAccuracy,
                 "timestamp": location.timestamp.timeIntervalSince1970 * 1000
             ])
-            singleResolve = nil
-            singleReject = nil
         }
     }
 
     func handleSingleError(_ error: Error) {
-        if let reject = singleReject {
-            reject("LOCATION_ERROR", error.localizedDescription, error)
-            singleResolve = nil
-            singleReject = nil
+        queueLock.lock()
+        let requests = pendingRequests
+        pendingRequests.removeAll()
+        queueLock.unlock()
+        
+        for req in requests {
+            req.reject("LOCATION_ERROR", error.localizedDescription, error)
         }
     }
 }

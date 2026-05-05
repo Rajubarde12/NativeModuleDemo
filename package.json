@@ -46,7 +46,8 @@
     "type": "modules",
     "jsSrcsDir": "src",
     "android": {
-      "javaPackageName": "com.nativemoduledemo"
+      "javaPackageName": "com.nativemoduledemo",
+  
     },
     "ios": {
       "modules": {
