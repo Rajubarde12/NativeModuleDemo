@@ -11,6 +11,9 @@
 		12406CC62FAB13C000E90028 /* LocationModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 12406CC52FAB13BC00E90028 /* LocationModule.mm */; };
 		126D75A12FA60ABC004ADBB9 /* DeviceInfoModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 126D75A32FA60ABE004ADBB9 /* DeviceInfoModule.mm */; };
 		126D75A22FA60ABD004ADBB9 /* DeviceInfoModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126D759C2FA5DCE8004ADBB9 /* DeviceInfoModule.swift */; };
+		128CC7652FAB57C3004C52F9 /* KeychainModuleImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 128CC7642FAB57C3004C52F9 /* KeychainModuleImpl.swift */; };
+		128CC7672FAB5FA1004C52F9 /* KeychainModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 128CC7662FAB5F89004C52F9 /* KeychainModule.mm */; };
+		12D3439A2FAB5296006ACC6B /* BiomettricModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 12D343992FAB527F006ACC6B /* BiomettricModule.mm */; };
 		12D38DAB2FA9CF890088AB0F /* LocationModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D38DAA2FA9CF890088AB0F /* LocationModule.swift */; };
 		12D38DAF2FAA1CD80088AB0F /* BiometricModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D38DAE2FAA1CD80088AB0F /* BiometricModule.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -21,9 +24,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		12406CC52FAB13BC00E90028 /* LocationModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModule.mm; sourceTree = "<group>"; };
+		12406CC52FAB13BC00E90028 /* LocationModule.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = LocationModule.mm; sourceTree = "<group>"; };
 		126D759C2FA5DCE8004ADBB9 /* DeviceInfoModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoModule.swift; sourceTree = "<group>"; };
 		126D75A32FA60ABE004ADBB9 /* DeviceInfoModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DeviceInfoModule.mm; sourceTree = "<group>"; };
+		128CC7642FAB57C3004C52F9 /* KeychainModuleImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainModuleImpl.swift; sourceTree = "<group>"; };
+		128CC7662FAB5F89004C52F9 /* KeychainModule.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = KeychainModule.mm; sourceTree = "<group>"; };
+		12D343992FAB527F006ACC6B /* BiomettricModule.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = BiomettricModule.mm; sourceTree = "<group>"; };
 		12D38DA72FA9CEA20088AB0F /* NativeModuleDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NativeModuleDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		12D38DAA2FA9CF890088AB0F /* LocationModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModule.swift; sourceTree = "<group>"; };
 		12D38DAE2FAA1CD80088AB0F /* BiometricModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricModule.swift; sourceTree = "<group>"; };
@@ -56,6 +62,8 @@
 		13B07FAE1A68108700A75B9A /* NativeModuleDemo */ = {
 			isa = PBXGroup;
 			children = (
+				128CC7662FAB5F89004C52F9 /* KeychainModule.mm */,
+				12D343992FAB527F006ACC6B /* BiomettricModule.mm */,
 				12406CC52FAB13BC00E90028 /* LocationModule.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
@@ -65,6 +73,7 @@
 				12D38DA72FA9CEA20088AB0F /* NativeModuleDemo-Bridging-Header.h */,
 				12D38DAA2FA9CF890088AB0F /* LocationModule.swift */,
 				12D38DAE2FAA1CD80088AB0F /* BiometricModule.swift */,
+				128CC7642FAB57C3004C52F9 /* KeychainModuleImpl.swift */,
 			);
 			name = NativeModuleDemo;
 			sourceTree = "<group>";
@@ -220,9 +229,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NativeModuleDemo/Pods-NativeModuleDemo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NativeModuleDemo/Pods-NativeModuleDemo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -259,9 +272,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NativeModuleDemo/Pods-NativeModuleDemo-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NativeModuleDemo/Pods-NativeModuleDemo-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -275,12 +292,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12D3439A2FAB5296006ACC6B /* BiomettricModule.mm in Sources */,
 				12406CC62FAB13C000E90028 /* LocationModule.mm in Sources */,
 				12D38DAB2FA9CF890088AB0F /* LocationModule.swift in Sources */,
 				12D38DAF2FAA1CD80088AB0F /* BiometricModule.swift in Sources */,
 				126D75A12FA60ABC004ADBB9 /* DeviceInfoModule.mm in Sources */,
 				126D75A22FA60ABD004ADBB9 /* DeviceInfoModule.swift in Sources */,
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
+				128CC7652FAB57C3004C52F9 /* KeychainModuleImpl.swift in Sources */,
+				128CC7672FAB5FA1004C52F9 /* KeychainModule.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
