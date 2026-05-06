@@ -8,8 +8,8 @@
 import Foundation
 import LocalAuthentication
 
-@objc(BiometricModule)
-class BiometricModule :NSObject{
+@objc(BiometricModuleImpl)
+class BiometricModuleImpl :NSObject{
   
   @objc
   func isBiometricAvailable(

@@ -14,6 +14,7 @@
 		12D38DAB2FA9CF890088AB0F /* LocationModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D38DAA2FA9CF890088AB0F /* LocationModule.swift */; };
 		12D38DAF2FAA1CD80088AB0F /* BiometricModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D38DAE2FAA1CD80088AB0F /* BiometricModule.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		5A3B2CED2BF063F014C17018 /* libPods-NativeModuleDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C8D8CE11CD94F7FD0EAB3C00 /* libPods-NativeModuleDemo.a */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		9E8FF9611764B3AE60EBAC63 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
@@ -35,6 +36,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-NativeModuleDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NativeModuleDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = NativeModuleDemo/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = NativeModuleDemo/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		C8D8CE11CD94F7FD0EAB3C00 /* libPods-NativeModuleDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NativeModuleDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -44,6 +46,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C80B921A6F3F58F76C31292 /* libPods-NativeModuleDemo.a in Frameworks */,
+				5A3B2CED2BF063F014C17018 /* libPods-NativeModuleDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +95,7 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				8958E10D34C8D39E9492C29E /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -104,6 +108,14 @@
 				13B07F961A680F5B00A75B9A /* NativeModuleDemo.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8958E10D34C8D39E9492C29E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C8D8CE11CD94F7FD0EAB3C00 /* libPods-NativeModuleDemo.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -208,13 +220,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NativeModuleDemo/Pods-NativeModuleDemo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NativeModuleDemo/Pods-NativeModuleDemo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -251,13 +259,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NativeModuleDemo/Pods-NativeModuleDemo-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-NativeModuleDemo/Pods-NativeModuleDemo-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

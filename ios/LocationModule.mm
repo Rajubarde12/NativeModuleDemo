@@ -1,6 +1,5 @@
 #import <ReactCodegen/AppSpecs/AppSpecs.h>
 #import <ReactCommon/RCTTurboModule.h>
-
 #import "NativeModuleDemo-Swift.h"
 
 using namespace facebook::react;
