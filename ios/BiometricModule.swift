@@ -8,18 +8,12 @@
 import Foundation
 import LocalAuthentication
 
-@objc(NativeAppBiometricModule)
+@objc(BiometricModule)
 class BiometricModule :NSObject{
-  
-  
-  @objc
-  static func requiresMainQueueSetup() -> Bool {
-    return false
-  }
   
   @objc
   func isBiometricAvailable(
-    resolve:@escaping RCTPromiseResolveBlock,
+    _resolve:@escaping RCTPromiseResolveBlock,
     reject:@escaping RCTPromiseRejectBlock
   ){
     let context=LAContext();
@@ -32,36 +26,36 @@ class BiometricModule :NSObject{
     if(canEvaluate){
       switch context.biometryType{
       case .faceID:
-        resolve("FACE_ID")
+           _resolve("FACE_ID")
       case .touchID:
-        resolve("TOUCH_ID")
+           _resolve("TOUCH_ID")
       case .opticID:
-        resolve("OPTIC_ID")
+           _resolve("OPTIC_ID")
       default:
-        resolve("AVAILABLE")
+          _resolve("AVAILABLE")
       }
     }else{
       guard let error=error else{
-        resolve("UNAVAILABLE")
+        _resolve("UNAVAILABLE")
         return
       }
       
       switch error.code{
-      case LAError.biometryNotEnrolled.rawValue:
-        resolve("NOT_ENROLLED")
       case LAError.biometryNotAvailable.rawValue:
-        resolve("NOT_SUPPORTED")
+        _resolve("NOT_ENROLLED")
+      case LAError.biometryNotAvailable.rawValue:
+        _resolve("NOT_SUPPORTED")
       case LAError.biometryLockout.rawValue:
-        resolve("LOCKED_OUT")
+                    _resolve("LOCKED_OUT")
       default:
-        resolve("UNAVAILABLE")
+        _resolve("UNAVAILABLE")
       }
     }
     
   }
   
   @objc
-  func authenticate(reason:String,resolve:@escaping RCTPromiseResolveBlock,reject:@escaping RCTPromiseRejectBlock){
+  func authenticate(reasom:String,resolve:@escaping RCTPromiseResolveBlock,reject:@escaping RCTPromiseRejectBlock){
     let context = LAContext();
     var error:NSError?
     
@@ -76,7 +70,7 @@ class BiometricModule :NSObject{
       return
     }
     
-    context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,localizedReason: reason){
+    context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,localizedReason: reasom){
       success,authError in
       DispatchQueue.main.async{
         if success{
