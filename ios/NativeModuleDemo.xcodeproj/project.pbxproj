@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0C80B921A6F3F58F76C31292 /* libPods-NativeModuleDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-NativeModuleDemo.a */; };
+		12406CC62FAB13C000E90028 /* LocationModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 12406CC52FAB13BC00E90028 /* LocationModule.mm */; };
 		126D75A12FA60ABC004ADBB9 /* DeviceInfoModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 126D75A32FA60ABE004ADBB9 /* DeviceInfoModule.mm */; };
 		126D75A22FA60ABD004ADBB9 /* DeviceInfoModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126D759C2FA5DCE8004ADBB9 /* DeviceInfoModule.swift */; };
-		12D38DA92FA9CF5F0088AB0F /* LocationModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 12D38DA82FA9CF5F0088AB0F /* LocationModule.m */; };
 		12D38DAB2FA9CF890088AB0F /* LocationModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D38DAA2FA9CF890088AB0F /* LocationModule.swift */; };
 		12D38DAF2FAA1CD80088AB0F /* BiometricModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D38DAE2FAA1CD80088AB0F /* BiometricModule.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -20,10 +20,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		12406CC52FAB13BC00E90028 /* LocationModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModule.mm; sourceTree = "<group>"; };
 		126D759C2FA5DCE8004ADBB9 /* DeviceInfoModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoModule.swift; sourceTree = "<group>"; };
 		126D75A32FA60ABE004ADBB9 /* DeviceInfoModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DeviceInfoModule.mm; sourceTree = "<group>"; };
 		12D38DA72FA9CEA20088AB0F /* NativeModuleDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NativeModuleDemo-Bridging-Header.h"; sourceTree = "<group>"; };
-		12D38DA82FA9CF5F0088AB0F /* LocationModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationModule.m; sourceTree = "<group>"; };
 		12D38DAA2FA9CF890088AB0F /* LocationModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModule.swift; sourceTree = "<group>"; };
 		12D38DAE2FAA1CD80088AB0F /* BiometricModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricModule.swift; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* NativeModuleDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NativeModuleDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -53,13 +53,13 @@
 		13B07FAE1A68108700A75B9A /* NativeModuleDemo */ = {
 			isa = PBXGroup;
 			children = (
+				12406CC52FAB13BC00E90028 /* LocationModule.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				12D38DA72FA9CEA20088AB0F /* NativeModuleDemo-Bridging-Header.h */,
-				12D38DA82FA9CF5F0088AB0F /* LocationModule.m */,
 				12D38DAA2FA9CF890088AB0F /* LocationModule.swift */,
 				12D38DAE2FAA1CD80088AB0F /* BiometricModule.swift */,
 			);
@@ -271,7 +271,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12D38DA92FA9CF5F0088AB0F /* LocationModule.m in Sources */,
+				12406CC62FAB13C000E90028 /* LocationModule.mm in Sources */,
 				12D38DAB2FA9CF890088AB0F /* LocationModule.swift in Sources */,
 				12D38DAF2FAA1CD80088AB0F /* BiometricModule.swift in Sources */,
 				126D75A12FA60ABC004ADBB9 /* DeviceInfoModule.mm in Sources */,

@@ -1,7 +1,8 @@
 import NativeAppLocationModule, {
   location,
 } from './src/NativeAppLocationModule';
-import NativeAppBiometricModule from './src/NativeAppBiometricModule';
+// import NativeAppBiometricModule from './src/NativeAppBiometricModule';
+import NativeAppDeviceInfo from './src/NativeAppDeviceInfo';
 
 import React, {
   useEffect,
@@ -125,8 +126,8 @@ export default function App() {
 
     try {
       setBioStatus('Checking...');
-      const status = await NativeAppBiometricModule.isBiometricAvailable();
-      setBioStatus(status);
+      // const status = await NativeAppBiometricModule.isBiometricAvailable();
+      setBioStatus("status");
     } catch (e: any) {
       console.log(e);
       setBioStatus(e.message || 'Error checking biometric');
@@ -136,10 +137,10 @@ export default function App() {
   const handleAuthenticate = async () => {
     try {
       setAuthResult('Authenticating...');
-      const result = await NativeAppBiometricModule.authenticate(
-        'Please authenticate to verify your identity',
-      );
-      setAuthResult(result);
+      // const result = await NativeAppBiometricModule.authenticate(
+      //   'Please authenticate to verify your identity',
+      // );
+      setAuthResult("result");
     } catch (e: any) {
       console.log(e);
       setAuthResult(e.message || 'Authentication failed');
@@ -168,6 +169,15 @@ export default function App() {
       NativeAppLocationModule.stopTracking();
     };
   }, []);
+
+
+const logDeviceinfo=async()=>{
+const info=await NativeAppDeviceInfo.getDeviceInfo();
+console.log(info);
+}
+useEffect(()=>{
+  logDeviceinfo();
+},[])
 
   return (
     <SafeAreaView style={styles.container}>

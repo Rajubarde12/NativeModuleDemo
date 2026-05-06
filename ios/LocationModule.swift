@@ -1,130 +1,163 @@
 import Foundation
 import CoreLocation
-import React
 
-// ✅ @objc name = .m file ka RCT_EXTERN_MODULE name
-@objc(LocationModule)
-class LocationModule: RCTEventEmitter {
+@objc(LocationModuleImpl)
+class LocationModuleImpl: NSObject {
+
+    // MARK: - Properties
 
     private var locationManager: CLLocationManager?
     private var locationDelegate: LocationDelegateWrapper?
-    private var hasListeners = false
-    
-    // 1. Thread-safe queue for concurrent single location requests
-    private var pendingRequests: [(resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock)] = []
+
+    private var pendingRequests: [
+        (
+            resolve: (NSDictionary) -> Void,
+            reject: (String, String, Error?) -> Void
+        )
+    ] = []
+
     private let queueLock = NSLock()
 
-    override static func moduleName() -> String! {
-        return "LocationModule"
+    // MARK: - Setup
+
+    private func setupLocationManagerIfNeeded() {
+
+        if locationManager == nil {
+            locationManager = CLLocationManager()
+        }
+
+        if locationDelegate == nil {
+            locationDelegate = LocationDelegateWrapper(module: self)
+        }
+
+        locationManager?.delegate = locationDelegate
     }
 
-    override func supportedEvents() -> [String]! {
-        return ["onLocationUpdate"]
-    }
-
-    override func startObserving() {
-        hasListeners = true
-    }
-
-    override func stopObserving() {
-        hasListeners = false
-    }
-
-    // ─── getCurrentLocation ──────────────────────────────────────
+    // MARK: - Public API
 
     @objc
     func getCurrentLocation(
-        _ resolve: @escaping RCTPromiseResolveBlock,  // ✅ space hai
-        reject: @escaping RCTPromiseRejectBlock
+        _ resolve: @escaping (NSDictionary) -> Void,
+        reject: @escaping (
+            String,
+            String,
+            Error?
+        ) -> Void
     ) {
+
         DispatchQueue.main.async {
+
             self.queueLock.lock()
-            self.pendingRequests.append((resolve, reject))
+
+            self.pendingRequests.append(
+                (
+                    resolve: resolve,
+                    reject: reject
+                )
+            )
+
             self.queueLock.unlock()
 
-            if self.locationManager == nil {
-                self.locationManager = CLLocationManager()
-                self.locationDelegate = LocationDelegateWrapper(module: self)
-                self.locationManager?.delegate = self.locationDelegate
-            }
-            
+            self.setupLocationManagerIfNeeded()
+
             self.locationManager?.requestWhenInUseAuthorization()
-            self.locationManager?.requestLocation() // Actively fetch fresh location
+            self.locationManager?.requestLocation()
         }
     }
 
-    // ─── startTracking ───────────────────────────────────────────
-
     @objc
     func startTracking() {
+
         DispatchQueue.main.async {
-            self.locationDelegate = LocationDelegateWrapper(module: self)
-            self.locationManager = CLLocationManager()
-            self.locationManager?.delegate = self.locationDelegate
-            
-            // 2. Optimized for continuous navigation tracking
-            self.locationManager?.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+
+            self.setupLocationManagerIfNeeded()
+
+            self.locationManager?.desiredAccuracy =
+                kCLLocationAccuracyBestForNavigation
+
             self.locationManager?.distanceFilter = 3
-            
-            // 3. Apple Best Practice: Explicitly indicate background tracking
+
             self.locationManager?.allowsBackgroundLocationUpdates = true
+
             self.locationManager?.pausesLocationUpdatesAutomatically = false
+
             self.locationManager?.showsBackgroundLocationIndicator = true
+
             self.locationManager?.requestAlwaysAuthorization()
+
             self.locationManager?.startUpdatingLocation()
         }
     }
 
-    // ─── stopTracking ────────────────────────────────────────────
-
     @objc
     func stopTracking() {
+
         DispatchQueue.main.async {
+
             self.locationManager?.stopUpdatingLocation()
-            self.locationManager = nil
+
+            self.locationManager?.delegate = nil
             self.locationDelegate = nil
+            self.locationManager = nil
         }
     }
 
-    func emitLocationUpdate(body: [String: Any]) {
-        guard hasListeners else { return }
-        sendEvent(withName: "onLocationUpdate", body: body)
-    }
+    // MARK: - Internal Handlers
 
-    func handleSingleLocation(_ location: CLLocation) {
+    func handleSingleLocation(
+        _ location: CLLocation
+    ) {
+
         queueLock.lock()
+
         let requests = pendingRequests
         pendingRequests.removeAll()
+
         queueLock.unlock()
-        
-        for req in requests {
-            req.resolve([
-                "latitude": location.coordinate.latitude,
-                "longitude": location.coordinate.longitude,
-                "accuracy": location.horizontalAccuracy,
-                "timestamp": location.timestamp.timeIntervalSince1970 * 1000
-            ])
+
+        let response: NSDictionary = [
+            "latitude": location.coordinate.latitude,
+            "longitude": location.coordinate.longitude,
+            "accuracy": location.horizontalAccuracy,
+            "timestamp":
+                location.timestamp.timeIntervalSince1970 * 1000
+        ]
+
+        requests.forEach {
+            $0.resolve(response)
         }
     }
 
-    func handleSingleError(_ error: Error) {
+    func handleSingleError(
+        _ error: Error
+    ) {
+
         queueLock.lock()
+
         let requests = pendingRequests
         pendingRequests.removeAll()
+
         queueLock.unlock()
-        
-        for req in requests {
-            req.reject("LOCATION_ERROR", error.localizedDescription, error)
+
+        requests.forEach {
+            $0.reject(
+                "LOCATION_ERROR",
+                error.localizedDescription,
+                error
+            )
         }
     }
 }
 
-// ─── Private Delegate Wrapper ──────────────────────────────────────
+// MARK: - CLLocationManagerDelegate
 
-private class LocationDelegateWrapper: NSObject, CLLocationManagerDelegate {
-    weak var module: LocationModule?
+private final class LocationDelegateWrapper:
+    NSObject,
+    CLLocationManagerDelegate {
 
-    init(module: LocationModule) {
+    weak var module: LocationModuleImpl?
+
+    init(module: LocationModuleImpl) {
         self.module = module
     }
 
@@ -132,28 +165,19 @@ private class LocationDelegateWrapper: NSObject, CLLocationManagerDelegate {
         _ manager: CLLocationManager,
         didUpdateLocations locations: [CLLocation]
     ) {
-        guard let location = locations.last else { return }
-        
-        // Handle the one-shot request
+
+        guard let location = locations.last else {
+            return
+        }
+
         module?.handleSingleLocation(location)
-
-        guard location.horizontalAccuracy <= 50 else { return }
-
-        module?.emitLocationUpdate(body: [
-            "latitude": location.coordinate.latitude,
-            "longitude": location.coordinate.longitude,
-            "accuracy": location.horizontalAccuracy,
-            "speed": location.speed,
-            "bearing": location.course,
-            "timestamp": location.timestamp.timeIntervalSince1970 * 1000
-        ])
     }
 
     func locationManager(
         _ manager: CLLocationManager,
         didFailWithError error: Error
     ) {
+
         module?.handleSingleError(error)
-        print("Location error: \(error.localizedDescription)")
     }
 }

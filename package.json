@@ -47,13 +47,7 @@
     "jsSrcsDir": "src",
     "android": {
       "javaPackageName": "com.nativemoduledemo"
-    },
-    "ios": {
-      "modules": {
-        "DeviceInfoModule": {
-          "className": "DeviceInfoModule"
-        }
-      }
     }
+   
   }
 }
