@@ -1,6 +1,7 @@
 import NativeAppLocationModule, {
   location,
 } from './src/NativeAppLocationModule';
+import NativeAppBiometricModule from './src/NativeAppBiometricModule';
 
 import React, {
   useEffect,
@@ -14,6 +15,7 @@ import {
   PermissionsAndroid,
   Platform,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -48,6 +50,12 @@ export default function App() {
     useState(false);
 
   const [error, setError] =
+    useState('');
+
+  const [bioStatus, setBioStatus] =
+    useState('');
+
+  const [authResult, setAuthResult] =
     useState('');
 
   const getLocation = async () => {
@@ -113,6 +121,31 @@ export default function App() {
     setTracking(false);
   };
 
+  const checkBiometric = async () => {
+
+    try {
+      setBioStatus('Checking...');
+      const status = await NativeAppBiometricModule.isBiometricAvailable();
+      setBioStatus(status);
+    } catch (e: any) {
+      console.log(e);
+      setBioStatus(e.message || 'Error checking biometric');
+    }
+  };
+
+  const handleAuthenticate = async () => {
+    try {
+      setAuthResult('Authenticating...');
+      const result = await NativeAppBiometricModule.authenticate(
+        'Please authenticate to verify your identity',
+      );
+      setAuthResult(result);
+    } catch (e: any) {
+      console.log(e);
+      setAuthResult(e.message || 'Authentication failed');
+    }
+  };
+
   useEffect(() => {
     getLocation();
 
@@ -155,7 +188,7 @@ export default function App() {
       </View>
 
       {/* BOTTOM PANEL */}
-      <View style={styles.bottomContainer}>
+      <ScrollView style={styles.bottomContainer} contentContainerStyle={{ paddingBottom: 40 }}>
         {loading ? (
           <ActivityIndicator
             size="small"
@@ -202,7 +235,30 @@ export default function App() {
             )}
           </>
         )}
-      </View>
+
+        {/* BIOMETRIC TEST PANEL */}
+        <View style={[styles.infoBox, { marginTop: 24 }]}>
+          <Text style={[styles.infoText, { fontSize: 18, color: '#333' }]}>
+            🔐 Biometric Test
+          </Text>
+
+          <TouchableOpacity style={styles.actionButton} onPress={checkBiometric}>
+            <Text style={styles.buttonText}>Check Availability</Text>
+          </TouchableOpacity>
+          {bioStatus ? (
+            <Text style={styles.resultText}>Status: {bioStatus}</Text>
+          ) : null}
+
+          <TouchableOpacity
+            style={[styles.actionButton, { backgroundColor: '#4F46E5' }]}
+            onPress={handleAuthenticate}>
+            <Text style={styles.buttonText}>Authenticate</Text>
+          </TouchableOpacity>
+          {authResult ? (
+            <Text style={styles.resultText}>Result: {authResult}</Text>
+          ) : null}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -303,5 +359,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
 
     fontWeight: '600',
+  },
+
+  actionButton: {
+    backgroundColor: '#3B82F6',
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: 'center',
+    marginTop: 12,
+  },
+
+  resultText: {
+    marginTop: 8,
+    color: '#475569',
+    fontWeight: '600',
+    textAlign: 'center',
+    fontSize: 14,
   },
 });

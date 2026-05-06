@@ -12,6 +12,7 @@
 		126D75A22FA60ABD004ADBB9 /* DeviceInfoModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126D759C2FA5DCE8004ADBB9 /* DeviceInfoModule.swift */; };
 		12D38DA92FA9CF5F0088AB0F /* LocationModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 12D38DA82FA9CF5F0088AB0F /* LocationModule.m */; };
 		12D38DAB2FA9CF890088AB0F /* LocationModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D38DAA2FA9CF890088AB0F /* LocationModule.swift */; };
+		12D38DAF2FAA1CD80088AB0F /* BiometricModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D38DAE2FAA1CD80088AB0F /* BiometricModule.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
@@ -24,6 +25,7 @@
 		12D38DA72FA9CEA20088AB0F /* NativeModuleDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NativeModuleDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		12D38DA82FA9CF5F0088AB0F /* LocationModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationModule.m; sourceTree = "<group>"; };
 		12D38DAA2FA9CF890088AB0F /* LocationModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModule.swift; sourceTree = "<group>"; };
+		12D38DAE2FAA1CD80088AB0F /* BiometricModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricModule.swift; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* NativeModuleDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NativeModuleDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = NativeModuleDemo/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = NativeModuleDemo/Info.plist; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 				12D38DA72FA9CEA20088AB0F /* NativeModuleDemo-Bridging-Header.h */,
 				12D38DA82FA9CF5F0088AB0F /* LocationModule.m */,
 				12D38DAA2FA9CF890088AB0F /* LocationModule.swift */,
+				12D38DAE2FAA1CD80088AB0F /* BiometricModule.swift */,
 			);
 			name = NativeModuleDemo;
 			sourceTree = "<group>";
@@ -270,6 +273,7 @@
 			files = (
 				12D38DA92FA9CF5F0088AB0F /* LocationModule.m in Sources */,
 				12D38DAB2FA9CF890088AB0F /* LocationModule.swift in Sources */,
+				12D38DAF2FAA1CD80088AB0F /* BiometricModule.swift in Sources */,
 				126D75A12FA60ABC004ADBB9 /* DeviceInfoModule.mm in Sources */,
 				126D75A22FA60ABD004ADBB9 /* DeviceInfoModule.swift in Sources */,
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
