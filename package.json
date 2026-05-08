@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@react-native/new-app-screen": "0.85.2",
+    "i18next": "^26.0.10",
     "react": "19.2.3",
+    "react-i18next": "^17.0.7",
     "react-native": "0.85.2",
     "react-native-maps": "^1.27.2",
     "react-native-maps-directions": "^1.9.0",
@@ -48,6 +50,5 @@
     "android": {
       "javaPackageName": "com.nativemoduledemo"
     }
-   
   }
 }

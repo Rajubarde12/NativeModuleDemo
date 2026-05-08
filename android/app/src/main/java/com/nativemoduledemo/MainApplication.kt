@@ -8,6 +8,8 @@ import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.nativemoduledemo.location.LocationPackage
 import  com.nativemoduledemo.bioauthentication.BiometricPackage
+import com.nativemoduledemo.keystore.KeystorePackage
+import com.nativemoduledemo.DeviceInfoPackage // Make sure this path is correct!
 class MainApplication : Application(), ReactApplication {
 
   override val reactHost: ReactHost by lazy {
@@ -15,8 +17,8 @@ class MainApplication : Application(), ReactApplication {
       context = applicationContext,
       packageList =
         PackageList(this).packages.apply {
-          add(DeviceInfoPackage())
           add(LocationPackage())
+          add(DeviceInfoPackage())
           add(BiometricPackage());
           add(KeystorePackage());
         },

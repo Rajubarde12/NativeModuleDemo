@@ -1,19 +1,34 @@
 package com.nativemoduledemo.keystore
 
-import com.facebook.react.ReactPackage
+import com.facebook.react.TurboReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.uimanager.ViewManager
+import com.facebook.react.module.annotations.ReactModule
+import com.facebook.react.module.model.ReactModuleInfo
+import com.facebook.react.module.model.ReactModuleInfo.Companion.classIsTurboModule
+import com.facebook.react.module.model.ReactModuleInfoProvider
 
-class KeystorePackage : ReactPackage {
+class KeystorePackage : TurboReactPackage() {
 
-    // Native modules register karo — yahan KeystoreModule add karo
-    override fun createNativeModules(
+    override fun getModule(
+        name: String,
         reactContext: ReactApplicationContext
-    ): List<NativeModule> = listOf(KeystoreModule(reactContext))
+    ): NativeModule? = when (name) {
+        KeystoreModule.NAME -> KeystoreModule(reactContext)
+        else -> null
+    }
 
-    // Koi UI/View module nahi hai — empty list return karo
-    override fun createViewManagers(
-        reactContext: ReactApplicationContext
-    ): List<ViewManager<*, *>> = emptyList()
+    override fun getReactModuleInfoProvider(): ReactModuleInfoProvider {
+        val moduleClass = KeystoreModule::class.java
+        val reactModule = checkNotNull(moduleClass.getAnnotation(ReactModule::class.java))
+        val moduleInfo = ReactModuleInfo(
+            reactModule.name,
+            moduleClass.name,
+            reactModule.canOverrideExistingModule,
+            reactModule.needsEagerInit,
+            reactModule.isCxxModule,
+            classIsTurboModule(moduleClass),
+        )
+        return ReactModuleInfoProvider { mapOf(reactModule.name to moduleInfo) }
+    }
 }

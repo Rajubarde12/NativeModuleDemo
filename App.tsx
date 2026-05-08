@@ -4,6 +4,9 @@ import NativeAppLocationModule, {
 import NativeAppBiometricModule from './src/NativeAppBiometricModule';
 import NativeAppDeviceInfo from './src/NativeAppDeviceInfo';
 import NativeKeychainModule from './src/NativeKeychainModule';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import i18n from 'i18next';
+import { initReactI18next, useTranslation } from 'react-i18next';
 
 import React, {
   useEffect,
@@ -17,7 +20,7 @@ import {
   NativeModules,
   PermissionsAndroid,
   Platform,
-  SafeAreaView,
+
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -41,13 +44,98 @@ const eventEmitter = new NativeEventEmitter(
   NativeModules.LocationModule,
 );
 
-// ─────────────────────────────────────────
-// Fixed keychain key
-// ─────────────────────────────────────────
 const AUTH_TOKEN_KEY = 'auth_token';
 
+const translations = {
+  en: {
+    title: 'Location Tracker',
+    subtitle: 'Coordinates Only',
+    startTracking: 'Start Navigation',
+    stopTracking: 'Stop Navigation',
+    bioTitle: '🔐 Biometric',
+    checkAvailability: 'Check Availability',
+    authenticate: 'Authenticate',
+    keychainTitle: '🔑 Keychain',
+    savedToken: 'Saved Token:',
+    noToken: 'No token saved yet',
+    tokenPlaceholder: 'Enter token...',
+    saveToken: '💾 Save Token',
+    readToken: '📖 Read Token',
+    deleteToken: '🗑️ Delete Token',
+    secureFlow: '— Secure Flow —',
+    bioFetchToken: '🔐 Biometric → Fetch Token',
+    wait: 'Wait...',
+    saving: 'Saving...',
+    reading: 'Reading...',
+    deleting: 'Deleting...',
+    tokenSaved: '✅ Token saved successfully',
+    saveFailed: '❌ Save failed',
+    tokenFetched: '✅ Token fetched',
+    noTokenFound: '⚠️ No token found',
+    tokenDeleted: '🗑️ Token deleted',
+    deleteFailed: '❌ Delete failed',
+    switchLang: 'हिंदी',
+    authenticating: 'Authenticating...',
+    authenticated: '✅ Authenticated',
+    authFailed: '❌ Auth failed',
+    checking: 'Checking...',
+    authPrompt: 'Please authenticate to verify your identity',
+    authPromptSecure: 'Authenticate to securely access your token',
+    emptyTokenErr: 'Token cannot be empty',
+    errPrefix: '❌ Error: ',
+  },
+  hi: {
+    title: 'लोकेशन ट्रैकर',
+    subtitle: 'केवल निर्देशांक',
+    startTracking: 'नेविगेशन शुरू करें',
+    stopTracking: 'नेविगेशन रोकें',
+    bioTitle: '🔐 बायोमेट्रिक',
+    checkAvailability: 'उपलब्धता जांचें',
+    authenticate: 'प्रमाणित करें',
+    keychainTitle: '🔑 कीचेन',
+    savedToken: 'सुरक्षित टोकन:',
+    noToken: 'कोई टोकन सुरक्षित नहीं है',
+    tokenPlaceholder: 'टोकन दर्ज करें...',
+    saveToken: '💾 टोकन सेव करें',
+    readToken: '📖 टोकन पढ़ें',
+    deleteToken: '🗑️ टोकन हटाएं',
+    secureFlow: '— सुरक्षित प्रक्रिया —',
+    bioFetchToken: '🔐 बायोमेट्रिक → टोकन प्राप्त करें',
+    wait: 'प्रतीक्षा करें...',
+    saving: 'सेव हो रहा है...',
+    reading: 'पढ़ रहे हैं...',
+    deleting: 'हटा रहे हैं...',
+    tokenSaved: '✅ टोकन सफलतापूर्वक सेव हो गया',
+    saveFailed: '❌ सेव विफल रहा',
+    tokenFetched: '✅ टोकन प्राप्त हो गया',
+    noTokenFound: '⚠️ कोई टोकन नहीं मिला',
+    tokenDeleted: '🗑️ टोकन हटा दिया गया',
+    deleteFailed: '❌ हटाना विफल रहा',
+    switchLang: 'English',
+    authenticating: 'प्रमाणित कर रहे हैं...',
+    authenticated: '✅ प्रमाणित हो गया',
+    authFailed: '❌ प्रमाणीकरण विफल',
+    checking: 'जांच की जा रही है...',
+    authPrompt: 'अपनी पहचान सत्यापित करने के लिए प्रमाणित करें',
+    authPromptSecure: 'अपना सुरक्षित टोकन प्राप्त करने के लिए प्रमाणित करें',
+    emptyTokenErr: 'टोकन खाली नहीं हो सकता',
+    errPrefix: '❌ त्रुटि: ',
+  }
+};
+
+i18n.use(initReactI18next).init({
+  resources: {
+    en: { translation: translations.en },
+    hi: { translation: translations.hi },
+  },
+  lng: 'en',
+  fallbackLng: 'en',
+  interpolation: { escapeValue: false },
+});
+
 export default function App() {
-  // ── Location state ──
+  const { t, i18n: i18nInstance } = useTranslation();
+
   const [info, setInfo] = useState<location | null>(null);
   const [loading, setLoading] = useState(false);
   const [tracking, setTracking] = useState(false);
@@ -57,15 +145,12 @@ export default function App() {
   const [bioStatus, setBioStatus] = useState('');
   const [authResult, setAuthResult] = useState('');
 
-  // ── Keychain state ──
   const [tokenInput, setTokenInput] = useState('');
   const [savedToken, setSavedToken] = useState<string | null>(null);
   const [keychainStatus, setKeychainStatus] = useState('');
   const [keychainLoading, setKeychainLoading] = useState(false);
 
-  // ─────────────────────────────────────────
-  // Location handlers
-  // ─────────────────────────────────────────
+
 
   const getLocation = async () => {
     try {
@@ -113,7 +198,7 @@ export default function App() {
 
   const checkBiometric = async () => {
     try {
-      setBioStatus('Checking...');
+      setBioStatus(t('checking'));
       const status = await NativeAppBiometricModule.isBiometricAvailable();
       setBioStatus(status);
     } catch (e: any) {
@@ -123,9 +208,9 @@ export default function App() {
 
   const handleAuthenticate = async () => {
     try {
-      setAuthResult('Authenticating...');
+      setAuthResult(t('authenticating'));
       const result = await NativeAppBiometricModule.authenticate(
-        'Please authenticate to verify your identity',
+        t('authPrompt'),
       );
       setAuthResult(result);
     } catch (e: any) {
@@ -140,26 +225,26 @@ export default function App() {
   // Token save karo keychain mein
   const saveToken = async () => {
     if (!tokenInput.trim()) {
-      Alert.alert('Error', 'Token khali nahi ho sakta');
+      Alert.alert('Error', t('emptyTokenErr'));
       return;
     }
     try {
       setKeychainLoading(true);
-      setKeychainStatus('Saving...');
+      setKeychainStatus(t('saving'));
       const success = await NativeKeychainModule.setItem(
         AUTH_TOKEN_KEY,
         tokenInput.trim(),
       );
       if (success) {
-        setKeychainStatus('✅ Token saved successfully');
+        setKeychainStatus(t('tokenSaved'));
         setTokenInput('');
         // Save ke baad turant read karo confirm karne ke liye
         await readToken();
       } else {
-        setKeychainStatus('❌ Save failed');
+        setKeychainStatus(t('saveFailed'));
       }
     } catch (e: any) {
-      setKeychainStatus(`❌ Error: ${e.message}`);
+      setKeychainStatus(`${t('errPrefix')}${e.message}`);
     } finally {
       setKeychainLoading(false);
     }
@@ -169,17 +254,17 @@ export default function App() {
   const readToken = async () => {
     try {
       setKeychainLoading(true);
-      setKeychainStatus('Reading...');
+      setKeychainStatus(t('reading'));
       const token = await NativeKeychainModule.getItem(AUTH_TOKEN_KEY);
       if (token) {
         setSavedToken(token);
-        setKeychainStatus('✅ Token fetched');
+        setKeychainStatus(t('tokenFetched'));
       } else {
         setSavedToken(null);
-        setKeychainStatus('⚠️ No token found');
+        setKeychainStatus(t('noTokenFound'));
       }
     } catch (e: any) {
-      setKeychainStatus(`❌ Error: ${e.message}`);
+      setKeychainStatus(`${t('errPrefix')}${e.message}`);
     } finally {
       setKeychainLoading(false);
     }
@@ -189,16 +274,16 @@ export default function App() {
   const deleteToken = async () => {
     try {
       setKeychainLoading(true);
-      setKeychainStatus('Deleting...');
+      setKeychainStatus(t('deleting'));
       const success = await NativeKeychainModule.removeItem(AUTH_TOKEN_KEY);
       if (success) {
         setSavedToken(null);
-        setKeychainStatus('🗑️ Token deleted');
+        setKeychainStatus(t('tokenDeleted'));
       } else {
-        setKeychainStatus('❌ Delete failed');
+        setKeychainStatus(t('deleteFailed'));
       }
     } catch (e: any) {
-      setKeychainStatus(`❌ Error: ${e.message}`);
+      setKeychainStatus(`${t('errPrefix')}${e.message}`);
     } finally {
       setKeychainLoading(false);
     }
@@ -208,16 +293,16 @@ export default function App() {
   // Real app mein yahi pattern use hota hai
   const authenticateAndFetchToken = async () => {
     try {
-      setAuthResult('Authenticating...');
+      setAuthResult(t('authenticating'));
       const result = await NativeAppBiometricModule.authenticate(
-        'Apna token securely access karne ke liye verify karein',
+        t('authPromptSecure'),
       );
 
       if (result === 'SUCCESS') {
-        setAuthResult('✅ Authenticated');
+        setAuthResult(t('authenticated'));
         await readToken();
       } else {
-        setAuthResult('❌ Auth failed');
+        setAuthResult(t('authFailed'));
       }
     } catch (e: any) {
       setAuthResult(e.message || 'Authentication failed');
@@ -266,8 +351,15 @@ export default function App() {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.heading}>Location Tracker</Text>
-        <Text style={styles.subHeading}>Coordinates Only</Text>
+        <View style={styles.headerTop}>
+          <Text style={styles.heading}>{t('title')}</Text>
+          <TouchableOpacity 
+            onPress={() => i18nInstance.changeLanguage(i18nInstance.language === 'en' ? 'hi' : 'en')} 
+            style={styles.langBtn}>
+            <Text style={styles.langBtnText}>{t('switchLang')}</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.subHeading}>{t('subtitle')}</Text>
       </View>
 
       <ScrollView
@@ -294,11 +386,11 @@ export default function App() {
 
             {!tracking ? (
               <TouchableOpacity style={styles.startButton} onPress={startTracking}>
-                <Text style={styles.buttonText}>Start Navigation</Text>
+                <Text style={styles.buttonText}>{t('startTracking')}</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity style={styles.stopButton} onPress={stopTracking}>
-                <Text style={styles.buttonText}>Stop Navigation</Text>
+                <Text style={styles.buttonText}>{t('stopTracking')}</Text>
               </TouchableOpacity>
             )}
           </>
@@ -306,10 +398,10 @@ export default function App() {
 
         {/* ── BIOMETRIC SECTION ── */}
         <View style={[styles.infoBox, { marginTop: 24 }]}>
-          <Text style={styles.sectionTitle}>🔐 Biometric</Text>
+          <Text style={styles.sectionTitle}>{t('bioTitle')}</Text>
 
           <TouchableOpacity style={styles.actionButton} onPress={checkBiometric}>
-            <Text style={styles.buttonText}>Check Availability</Text>
+            <Text style={styles.buttonText}>{t('checkAvailability')}</Text>
           </TouchableOpacity>
           {bioStatus ? (
             <Text style={styles.resultText}>Status: {bioStatus}</Text>
@@ -318,7 +410,7 @@ export default function App() {
           <TouchableOpacity
             style={[styles.actionButton, { backgroundColor: '#4F46E5' }]}
             onPress={handleAuthenticate}>
-            <Text style={styles.buttonText}>Authenticate</Text>
+            <Text style={styles.buttonText}>{t('authenticate')}</Text>
           </TouchableOpacity>
           {authResult ? (
             <Text style={styles.resultText}>Result: {authResult}</Text>
@@ -327,24 +419,24 @@ export default function App() {
 
         {/* ── KEYCHAIN SECTION ── */}
         <View style={[styles.infoBox, { marginTop: 24 }]}>
-          <Text style={styles.sectionTitle}>🔑 Keychain</Text>
+          <Text style={styles.sectionTitle}>{t('keychainTitle')}</Text>
 
           {/* Saved token display */}
           {savedToken ? (
             <View style={styles.tokenDisplay}>
-              <Text style={styles.tokenLabel}>Saved Token:</Text>
+              <Text style={styles.tokenLabel}>{t('savedToken')}</Text>
               <Text style={styles.tokenValue} numberOfLines={2}>
                 {savedToken}
               </Text>
             </View>
           ) : (
-            <Text style={styles.resultText}>No token saved yet</Text>
+            <Text style={styles.resultText}>{t('noToken')}</Text>
           )}
 
           {/* Token input */}
           <TextInput
             style={styles.input}
-            placeholder="Token enter karo..."
+            placeholder={t('tokenPlaceholder')}
             placeholderTextColor="#94A3B8"
             value={tokenInput}
             onChangeText={setTokenInput}
@@ -358,7 +450,7 @@ export default function App() {
             onPress={saveToken}
             disabled={keychainLoading}>
             <Text style={styles.buttonText}>
-              {keychainLoading ? 'Wait...' : '💾 Save Token'}
+              {keychainLoading ? t('wait') : t('saveToken')}
             </Text>
           </TouchableOpacity>
 
@@ -366,34 +458,35 @@ export default function App() {
             style={[styles.actionButton, { backgroundColor: '#2563EB' }]}
             onPress={readToken}
             disabled={keychainLoading}>
-            <Text style={styles.buttonText}>📖 Read Token</Text>
+            <Text style={styles.buttonText}>{t('readToken')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.actionButton, { backgroundColor: '#DC2626' }]}
             onPress={deleteToken}
             disabled={keychainLoading}>
-            <Text style={styles.buttonText}>🗑️ Delete Token</Text>
+            <Text style={styles.buttonText}>{t('deleteToken')}</Text>
           </TouchableOpacity>
 
           {/* Biometric + Keychain combined flow */}
           <View style={styles.divider} />
-          <Text style={styles.dividerText}>— Secure Flow —</Text>
+          <Text style={styles.dividerText}>{t('secureFlow')}</Text>
 
           <TouchableOpacity
             style={[styles.actionButton, { backgroundColor: '#7C3AED' }]}
             onPress={authenticateAndFetchToken}
             disabled={keychainLoading}>
             <Text style={styles.buttonText}>
-              🔐 Biometric → Fetch Token
+              {t('bioFetchToken')}
             </Text>
           </TouchableOpacity>
 
-          {/* Status message */}
+     
           {keychainStatus ? (
             <Text style={styles.resultText}>{keychainStatus}</Text>
           ) : null}
         </View>
+        
       </ScrollView>
     </SafeAreaView>
   );
@@ -408,6 +501,22 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     paddingHorizontal: 20,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  langBtn: {
+    backgroundColor: '#334155',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  langBtnText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
   },
   heading: {
     color: '#fff',
