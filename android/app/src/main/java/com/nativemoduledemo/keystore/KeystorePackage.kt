@@ -1,14 +1,13 @@
 package com.nativemoduledemo.keystore
-
-import com.facebook.react.TurboReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfo.Companion.classIsTurboModule
 import com.facebook.react.module.model.ReactModuleInfoProvider
+import com.facebook.react.BaseReactPackage
 
-class KeystorePackage : TurboReactPackage() {
+class KeystorePackage : BaseReactPackage() {
 
     override fun getModule(
         name: String,
